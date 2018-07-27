@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Timeline | Test</title>
+
+  <style type="text/css">
+    body, html {
+      font-family: sans-serif;
+    }
+    p {
+      max-width: 800px;
+    }
+  </style>
+
+  <script src="tableau2/static/lib/vis/dist/vis.js"></script>
+  <link href="tableau2/static/lib/vis/dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+
+  
+</head>
+<body>
+
+<div id="visualization"></div>
+
+<script type="text/javascript">
+  // DOM element where the Timeline will be attached
+  var container = document.getElementById('visualization');
+
+  var groups = new vis.DataSet([
+	{id: 1, content: 'Widgi'},
+	{id: 2, content: 'Widgo'},
+	{id: 3, content: 'Widgu'},
+	]);
+
+  var date = new Date();
+  date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
+  var end = new Date();
+  end.setHours(date.getHours() +  4 );
+  
+  var items = new vis.DataSet();
+	items.add({id: 1, group: 1, start: date, end: end, content: 'Order ' + 1});
+	items.add({id: 2, group: 2, start: date, end: end, content: 'Order ' + 2});
+	items.add({id: 3, group: 3, start: date, end: end, content: 'Order ' + 3});
+
+  // Configuration for the Timeline
+  var options = {
+    stack: false,
+    start: new Date(),
+    end: new Date(1000*60*60*24 + (new Date()).valueOf()),
+    editable: true,
+    margin: {
+      item: 10, // minimal margin between items
+      axis: 5   // minimal margin between items and the axis
+    },
+    orientation: 'top'
+  };
+
+  timeline = new vis.Timeline(container, null, options);
+  timeline.setGroups(groups);
+  timeline.setItems(items);
+
+
+</script>
+</body>
+</html>
