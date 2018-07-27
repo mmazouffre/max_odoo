@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem name="Tableau" 
+	id="menu_main_pm" 
+	web_icon="tableau,static/description/icon.png"
+	sequence="2"/>
+
+    <menuitem id="menu_tableau" name="Dashboard" parent="menu_main_pm" sequence="1"/>
+</odoo>

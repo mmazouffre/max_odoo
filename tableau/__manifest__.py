@@ -10,11 +10,13 @@
     "website": "",
     'depends': [
         'web',
+	'web_kanban',
     ],
     'qweb': [
         'static/src/xml/tableau.xml',
     ],
     'data': [
         'views/tableau.xml',
+	'views/tableau_view.xml',
     ],
 }
