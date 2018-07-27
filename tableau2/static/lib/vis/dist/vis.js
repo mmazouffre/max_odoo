@@ -11837,9 +11837,12 @@ Group.prototype._create = function () {
   label.appendChild(inner);
   this.dom.inner = inner;
 
+
+  //adding a button in the inner
   var button = document.createElement('button');
   inner.appendChild(button);
   this.dom.button = button;
+  this.dom.button.style.height = "66px"
 
   
   var foreground = document.createElement('div');
