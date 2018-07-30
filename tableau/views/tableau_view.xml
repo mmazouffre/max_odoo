@@ -21,7 +21,7 @@
         
         
         
-    <menuitem id="menu_tableau" name="Dashboard" parent="menu_main_pm" sequence="1"/>
+    <menuitem id="menu_tableau" name="Dashboard" parent="menu_main_pm" sequence="1" action="sample_user_list"/>
     
-    <menuitem id="les_users" name="Utilisateurs" parent="menu_tableau" sequence="1" action="sample_user_list"/>
+    <menuitem id="les_users" name="Utilisateurs" parent="menu_tableau" sequence="1" />
 </odoo>
