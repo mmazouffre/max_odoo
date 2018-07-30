@@ -12826,10 +12826,31 @@ RangeItem.prototype._createDomElement = function () {
 
     this.dom.dcontent = document.createElement('div');
     this.dom.dcontent.className = 'vis-item-content';
-    this.dom.dcontent.innerHTML = 'Test';
+    this.dom.dcontent.innerHTML = '1st task';
     this.dom.dframe.appendChild(this.dom.dcontent);
 
     this.dom.dbox1['timeline-item'] = this;
+
+    //this is a test 2
+    this.dom.dbox2 = document.createElement('div');
+    this.dom.dbox2.className = 'vis-item vis-range vis-editable';
+    this.dom.dbox2.style.left = "300px";
+    this.dom.dbox.appendChild(this.dom.dbox2);
+
+    this.dom.dframe2 = document.createElement('div');
+    this.dom.dframe2.className = 'vis-item-overflow';
+    this.dom.dbox2.appendChild(this.dom.dframe2);
+
+    this.dom.visibledFrame2 = document.createElement('div');
+    this.dom.visibledFrame2.className = 'vis-item-visible-frame';
+    this.dom.dbox2.appendChild(this.dom.visibledFrame2);
+
+    this.dom.dcontent2 = document.createElement('div');
+    this.dom.dcontent2.className = 'vis-item-content';
+    this.dom.dcontent2.innerHTML = '2nd task';
+    this.dom.dframe2.appendChild(this.dom.dcontent2);
+
+    this.dom.dbox2['timeline-item'] = this;
 
     // frame box (to prevent the item contents from overflowing)
     this.dom.frame = document.createElement('div');

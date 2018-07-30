@@ -41,6 +41,13 @@
 	items.add({id: 2, group: 2, start: date, end: end, content: 'Order ' + 2});
 	items.add({id: 3, group: 3, start: date, end: end, content: 'Order ' + 3});
 
+  var midDate = new Date();
+  midDate.setHours(date.getHours() + 100 );
+
+  var subitems = new vis.DataSet();
+	items.add({id: 1, item: 1, start: date, end: midDate, content: 'task ' + 1});
+	items.add({id: 2, item: 1, start: midDate, end: end, content: 'task ' + 1});
+
   // Configuration for the Timeline
   var options = {
     stack: false,
