@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 {
     'name': "tableau",
     'summary': "this is a test",
