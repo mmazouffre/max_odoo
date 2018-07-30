@@ -12781,7 +12781,7 @@ function RangeItem(data, conversion, options) {
 
 RangeItem.prototype = new Item(null, null, null);
 
-RangeItem.prototype.baseClassName = 'vis-item vis-range collapsible';
+RangeItem.prototype.baseClassName = 'vis-item vis-range';
 
 /**
  * Check whether this item is visible inside given range
@@ -12805,11 +12805,31 @@ RangeItem.prototype._createDomElement = function () {
 
     // create detail of item box
     this.dom.dbox = document.createElement('div');
-    this.dom.dbox.className = 'content';
-    this.dom.dbox.innerHTML = 'coucou';
+    this.dom.dbox.className = 'vis-group';
     this.dom.dbox.style.display = "block";
     this.dom.dbox.style.position = "absolute";
-    this.dom.dbox.style.top = "46px";
+    this.dom.dbox.style.top = "40px";
+    this.dom.dbox.style.height = "31px";
+
+    //this is a test
+    this.dom.dbox1 = document.createElement('div');
+    this.dom.dbox1.className = 'vis-item vis-range vis-editable';
+    this.dom.dbox.appendChild(this.dom.dbox1);
+
+    this.dom.dframe = document.createElement('div');
+    this.dom.dframe.className = 'vis-item-overflow';
+    this.dom.dbox1.appendChild(this.dom.dframe);
+
+    this.dom.visibledFrame = document.createElement('div');
+    this.dom.visibledFrame.className = 'vis-item-visible-frame';
+    this.dom.dbox1.appendChild(this.dom.visibledFrame);
+
+    this.dom.dcontent = document.createElement('div');
+    this.dom.dcontent.className = 'vis-item-content';
+    this.dom.dcontent.innerHTML = 'Test';
+    this.dom.dframe.appendChild(this.dom.dcontent);
+
+    this.dom.dbox1['timeline-item'] = this;
 
     // frame box (to prevent the item contents from overflowing)
     this.dom.frame = document.createElement('div');
