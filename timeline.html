@@ -12,8 +12,8 @@
     }
   </style>
 
-  <script src="tableau2/static/lib/vis/dist/vis.js"></script>
-  <link href="tableau2/static/lib/vis/dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+  <script src="tableau3/static/lib/vis/dist/vis.js"></script>
+  <link href="tableau3/static/lib/vis/dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
 
   
 </head>
@@ -34,7 +34,7 @@
   var date = new Date();
   date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
   var end = new Date();
-  end.setHours(date.getHours() +  4 );
+  end.setHours(date.getHours() +  200 );
   
   var items = new vis.DataSet();
 	items.add({id: 1, group: 1, start: date, end: end, content: 'Order ' + 1});
