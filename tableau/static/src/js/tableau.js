@@ -18,4 +18,4 @@ odoo.define('tableau.tableau', function (require) {
     var rendered = QWeb.render(this.form_template, this);
     this.$el.html(rendered);
 
-}
+});
