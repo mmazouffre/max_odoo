@@ -14,11 +14,12 @@ odoo.define('tableau.tableau', function (require) {
     var _lt = core._lt;
     var QWeb = core.qweb;
     
-
-    renderElement: function() {
-        this._super();
-        this.form_template = 'Tableau';
-        var rendered = QWeb.render(this.form_template, this);
-        this.$el.html(rendered);
-    }
+    var myView = View.extend({
+        renderElement: function() {
+            this._super();
+            this.form_template = 'Tableau';
+            var rendered = QWeb.render(this.form_template, this);
+            this.$el.html(rendered);
+        }
+    })
 });
