@@ -1,1 +1,5 @@
-<h1>This is a Heading</h1>
+<template>
+  <t t-name="Tableau">
+    <h1>This is a Heading</h1>
+  </t>
+</template>

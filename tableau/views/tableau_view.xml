@@ -19,9 +19,16 @@
             <field name="view_mode">tree,form</field>
         </record>      
         
+
+	<!-- An html -->
+
+	<record id="sample_html" model="ir.actions.act_window">
+	    <field name="res_model">tableau.tableau</field>
+	</record>
         
         
-    <menuitem id="menu_tableau" name="Dashboard" parent="menu_main_pm" sequence="1" action="sample_user_list"/>
+    <menuitem id="menu_tableau" name="Dashboard" parent="menu_main_pm" sequence="1"/>
     
-    <menuitem id="les_users" name="Utilisateurs" parent="menu_tableau" sequence="1" />
+    <menuitem id="test" name="Coucou" parent="menu_tableau" sequence="3" action="sample_user_list"/>
+    <menuitem id="test2" name="Une page" parent="menu_tableau" sequence="4" action="sample_html"/>
 </odoo>
