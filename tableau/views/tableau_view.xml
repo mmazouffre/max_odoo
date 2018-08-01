@@ -6,6 +6,37 @@
 	sequence="2"/>
 
 
+	<!-- A view -->
+
+        <record model="ir.ui.view" id="board_tableau_tree">
+            <field name="name">My Tableau</field>
+            <field name="model">tableau.tableau</field>
+            <field name="arch" type="xml">
+		<tree>
+			<field name="fullname" />
+		</tree>
+            </field>
+	</record>
+
+        <record model="ir.ui.view" id="board_tableau_form">
+            <field name="name">My Tableau</field>
+            <field name="model">tableau.tableau</field>
+            <field name="arch" type="xml">
+		<form>
+			<group>
+				<H1> prout </H1>
+				<dash/>
+			</group>
+			<group>
+				<notebook>
+					<page name="coin" string="Coin">
+						<field name="fullname" />
+					</page>
+				</notebook>
+			</group>
+		</form>
+            </field>
+	</record>
 
         <!-- List of users -->
                 
@@ -23,7 +54,10 @@
 	<!-- An html -->
 
 	<record id="sample_html" model="ir.actions.act_window">
+	    <field name="name">A page</field>
 	    <field name="res_model">tableau.tableau</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,kanban,pivot,graph</field>
 	</record>
         
         

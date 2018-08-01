@@ -10,3 +10,6 @@ class tableau(models.Model):
 
     _name = "tableau.tableau"
     _description = "Tableau"
+    _record_name = "fullname"
+
+    fullname = fields.Char('Full Metal Name')

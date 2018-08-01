@@ -14,12 +14,19 @@ odoo.define('tableau.tableau', function (require) {
     var _lt = core._lt;
     var QWeb = core.qweb;
     
-    var myView = View.extend({
+    var myView = form_common.FormWidget.extend({
         renderElement: function() {
             this._super();
-            this.form_template = 'Tableau';
+            this.form_template = 'Dash';
             var rendered = QWeb.render(this.form_template, this);
             this.$el.html(rendered);
         }
     })
+
+
+
+core.form_tag_registry
+    .add('dash', myView);
+
+
 });

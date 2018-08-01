@@ -1,5 +1,5 @@
 <template>
-  <t t-name="Tableau">
-    <h1>This is a Heading</h1>
+  <t t-name="Dash">
+    <div>This is a division</div>
   </t>
 </template>
