@@ -12803,84 +12803,28 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.box = document.createElement('div');
     // className is updated in redraw()
 
-    // create detail of item box
-    this.dom.dbox = document.createElement('div');
-    this.dom.dbox.className = 'vis-group';
-    this.dom.dbox.style.display = "block";
-    this.dom.dbox.style.position = "absolute";
-    this.dom.dbox.style.top = "40px";
-    this.dom.dbox.style.height = "31px";
-
-    //this is a test
-    this.dom.dbox1 = document.createElement('div');
-    this.dom.dbox1.className = 'vis-item vis-range vis-editable';
-    this.dom.dbox.appendChild(this.dom.dbox1);
-
-    this.dom.dframe = document.createElement('div');
-    this.dom.dframe.className = 'vis-item-overflow';
-    this.dom.dbox1.appendChild(this.dom.dframe);
-
-    this.dom.visibledFrame = document.createElement('div');
-    this.dom.visibledFrame.className = 'vis-item-visible-frame';
-    this.dom.dbox1.appendChild(this.dom.visibledFrame);
-
-    this.dom.dcontent = document.createElement('div');
-    this.dom.dcontent.className = 'vis-item-content';
-    this.dom.dcontent.innerHTML = '1st task';
-    this.dom.dframe.appendChild(this.dom.dcontent);
-
-    this.dom.dbox1['timeline-item'] = this;
-
-    var me = this;
-    // create and show drag area
-    var dragCenter = document.createElement('div');
-    dragCenter.className = 'vis-drag-center';
-    dragCenter.dragCenterItem = this;
-    var hammer = new Hammer(dragCenter);
-
-    hammer.on('tap', function (event) {
-      me.parent.itemSet.body.emitter.emit('click', {
-        event: event,
-        item: me.id
-      });
-    });
-    hammer.on('doubletap', function (event) {
-      event.stopPropagation();
-      me.parent.itemSet._onUpdateItem(me);
-      me.parent.itemSet.body.emitter.emit('doubleClick', {
-        event: event,
-        item: me.id
-      });
-    });
-    this.dom.ddragcenter = dragCenter;
-    this.dom.dbox1.appendChild(this.dom.ddragcenter);
-
-
-    //this is a test 2
-    this.dom.dbox2 = document.createElement('div');
-    this.dom.dbox2.className = 'vis-item vis-range vis-editable';
-    this.dom.dbox2.style.left = "300px";
-    this.dom.dbox.appendChild(this.dom.dbox2);
-
-    this.dom.dframe2 = document.createElement('div');
-    this.dom.dframe2.className = 'vis-item-overflow';
-    this.dom.dbox2.appendChild(this.dom.dframe2);
-
-    this.dom.visibledFrame2 = document.createElement('div');
-    this.dom.visibledFrame2.className = 'vis-item-visible-frame';
-    this.dom.dbox2.appendChild(this.dom.visibledFrame2);
-
-    this.dom.dcontent2 = document.createElement('div');
-    this.dom.dcontent2.className = 'vis-item-content';
-    this.dom.dcontent2.innerHTML = '2nd task';
-    this.dom.dframe2.appendChild(this.dom.dcontent2);
-
-    this.dom.dbox2['timeline-item'] = this;
-
     // frame box (to prevent the item contents from overflowing)
     this.dom.frame = document.createElement('div');
     this.dom.frame.className = 'vis-item-overflow';
     this.dom.box.appendChild(this.dom.frame);
+
+    // create global of item box
+    this.dom.dbox = document.createElement('div');
+    this.dom.dbox.className = 'vis-item vis-range';
+    this.dom.dbox.style.display = "block";
+    this.dom.dbox.style.position = "absolute";
+    this.dom.dbox.style.top = "41px";
+    this.dom.dbox.style.height = "31px";
+    this.dom.dframe = document.createElement('div');
+    this.dom.dframe.className = 'vis-item-overflow';
+    this.dom.dbox.appendChild(this.dom.dframe);
+    this.dom.visibledFrame = document.createElement('div');
+    this.dom.visibledFrame.className = 'vis-item-visible-frame';
+    this.dom.dbox.appendChild(this.dom.visibledFrame);
+    this.dom.dcontent = document.createElement('div');
+    this.dom.dcontent.className = 'vis-item-content';
+    this.dom.dframe.appendChild(this.dom.dcontent);
+    this.dom.dcontent.innerHTML = "Lot X";
 
     // visible frame box (showing the frame that is always visible)
     this.dom.visibleFrame = document.createElement('div');
@@ -12891,6 +12835,7 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.content = document.createElement('div');
     this.dom.content.className = 'vis-item-content';
     this.dom.frame.appendChild(this.dom.content);
+
 
     // attach this item as attribute
     this.dom.box['timeline-item'] = this;
@@ -12911,7 +12856,6 @@ RangeItem.prototype._appendDomElement = function () {
       throw new Error('Cannot redraw item: parent has no foreground container element');
     }
     foreground.appendChild(this.dom.box);
-    foreground.appendChild(this.dom.dbox);
   }
   this.displayed = true;
 };
@@ -12931,15 +12875,11 @@ RangeItem.prototype._updateDirtyDomComponents = function () {
     // update class
     var className = (this.data.className ? ' ' + this.data.className : '') + (this.selected ? ' vis-selected' : '') + (editable ? ' vis-editable' : ' vis-readonly');
     this.dom.box.className = this.baseClassName + className;
-    this.dom.dbox1.className = this.baseClassName + className;
 
     // turn off max-width to be able to calculate the real width
     // this causes an extra browser repaint/reflow, but so be it
     this.dom.content.style.maxWidth = 'none';
 
-    //the dbox has to follow the first one
-    var collcontent = this.dom.box.nextElementSibling;
-    collcontent.style.left = this.dom.box.style.left;
   }
 };
 

@@ -35,18 +35,20 @@
   date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
   var end = new Date();
   end.setHours(date.getHours() +  200 );
-  
+  var midend = new Date();
+  midend.setHours(date.getHours() + 90 );
+  var middate = new Date();
+  middate.setHours(date.getHours() + 110 );
+
+
   var items = new vis.DataSet();
-	items.add({id: 1, group: 1, start: date, end: end, content: 'Order ' + 1});
-	items.add({id: 2, group: 2, start: date, end: end, content: 'Order ' + 2});
-	items.add({id: 3, group: 3, start: date, end: end, content: 'Order ' + 3});
+	items.add({id: 1, group: 1, start: date, end: midend, content: 'Subtask ' + 1});
+        items.add({id: 2, group: 1, start: middate, end: end, content: 'Subtask ' + 2});
+	items.add({id: 3, group: 2, start: date, end: midend, content: 'SubTask ' + 1});
+	items.add({id: 4, group: 2, start: middate, end: end, content: 'Subtask ' + 2});
+	items.add({id: 5, group: 3, start: date, end: midend, content: 'Subtask ' + 1});
+	items.add({id: 6, group: 3, start: middate, end: end, content: 'Subtask ' + 2});
 
-  var midDate = new Date();
-  midDate.setHours(date.getHours() + 100 );
-
-  var subitems = new vis.DataSet();
-	subitems.add({id: 1, item: 1, start: date, end: midDate, content: 'task ' + 1});
-	subitems.add({id: 2, item: 1, start: midDate, end: end, content: 'task ' + 1});
 
   // Configuration for the Timeline
   var options = {
