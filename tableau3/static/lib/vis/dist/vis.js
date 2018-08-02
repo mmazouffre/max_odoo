@@ -12831,6 +12831,31 @@ RangeItem.prototype._createDomElement = function () {
 
     this.dom.dbox1['timeline-item'] = this;
 
+    var me = this;
+    // create and show drag area
+    var dragCenter = document.createElement('div');
+    dragCenter.className = 'vis-drag-center';
+    dragCenter.dragCenterItem = this;
+    var hammer = new Hammer(dragCenter);
+
+    hammer.on('tap', function (event) {
+      me.parent.itemSet.body.emitter.emit('click', {
+        event: event,
+        item: me.id
+      });
+    });
+    hammer.on('doubletap', function (event) {
+      event.stopPropagation();
+      me.parent.itemSet._onUpdateItem(me);
+      me.parent.itemSet.body.emitter.emit('doubleClick', {
+        event: event,
+        item: me.id
+      });
+    });
+    this.dom.ddragcenter = dragCenter;
+    this.dom.dbox1.appendChild(this.dom.ddragcenter);
+
+
     //this is a test 2
     this.dom.dbox2 = document.createElement('div');
     this.dom.dbox2.className = 'vis-item vis-range vis-editable';
@@ -12906,6 +12931,7 @@ RangeItem.prototype._updateDirtyDomComponents = function () {
     // update class
     var className = (this.data.className ? ' ' + this.data.className : '') + (this.selected ? ' vis-selected' : '') + (editable ? ' vis-editable' : ' vis-readonly');
     this.dom.box.className = this.baseClassName + className;
+    this.dom.dbox1.className = this.baseClassName + className;
 
     // turn off max-width to be able to calculate the real width
     // this causes an extra browser repaint/reflow, but so be it
