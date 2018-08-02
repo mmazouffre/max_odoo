@@ -18003,6 +18003,26 @@ ItemSet.prototype.show = function () {
       this.body.dom.left.appendChild(this.dom.labelSet);
     }
   }
+
+    // create global of item box
+    this.dom.dbox = document.createElement('div');
+    this.dom.dbox.className = 'vis-item vis-range';
+    this.dom.dbox.style.display = "block";
+    this.dom.dbox.style.position = "absolute";
+    this.dom.dbox.style.top = "41px";
+    this.dom.dbox.style.height = "31px";
+    this.body.dom.center.appendChild(this.dom.dbox)
+
+    this.dom.dframe = document.createElement('div');
+    this.dom.dframe.className = 'vis-item-overflow';
+    this.dom.dbox.appendChild(this.dom.dframe);
+    this.dom.visibledFrame = document.createElement('div');
+    this.dom.visibledFrame.className = 'vis-item-visible-frame';
+    this.dom.dbox.appendChild(this.dom.visibledFrame);
+    this.dom.dcontent = document.createElement('div');
+    this.dom.dcontent.className = 'vis-item-content';
+    this.dom.dframe.appendChild(this.dom.dcontent);
+    this.dom.dcontent.innerHTML = "Lot X";
 };
 
 /**
