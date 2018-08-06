@@ -11850,6 +11850,25 @@ Group.prototype._create = function () {
   foreground['timeline-group'] = this;
   this.dom.foreground = foreground;
 
+  // create global of item box
+  this.dom.dbox = document.createElement('div');
+  this.dom.dbox.className = 'vis-item vis-range';
+  this.dom.dbox.style.display = "block";
+  this.dom.dbox.style.position = "absolute";
+  this.dom.dbox.style.top = "41px";
+  this.dom.dbox.style.height = "31px";
+  this.dom.foreground.appendChild(this.dom.dbox);
+  this.dom.dframe = document.createElement('div');
+  this.dom.dframe.className = 'vis-item-overflow';
+  this.dom.dbox.appendChild(this.dom.dframe);
+  this.dom.visibledFrame = document.createElement('div');
+  this.dom.visibledFrame.className = 'vis-item-visible-frame';
+  this.dom.dbox.appendChild(this.dom.visibledFrame);
+  this.dom.dcontent = document.createElement('div');
+  this.dom.dcontent.className = 'vis-item-content';
+  this.dom.dframe.appendChild(this.dom.dcontent);
+  this.dom.dcontent.innerHTML = "Lot X";
+
   this.dom.background = document.createElement('div');
   this.dom.background.className = 'vis-group';
 
@@ -12803,28 +12822,13 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.box = document.createElement('div');
     // className is updated in redraw()
 
+
+
     // frame box (to prevent the item contents from overflowing)
     this.dom.frame = document.createElement('div');
     this.dom.frame.className = 'vis-item-overflow';
     this.dom.box.appendChild(this.dom.frame);
 
-    // create global of item box
-    this.dom.dbox = document.createElement('div');
-    this.dom.dbox.className = 'vis-item vis-range';
-    this.dom.dbox.style.display = "block";
-    this.dom.dbox.style.position = "absolute";
-    this.dom.dbox.style.top = "41px";
-    this.dom.dbox.style.height = "31px";
-    this.dom.dframe = document.createElement('div');
-    this.dom.dframe.className = 'vis-item-overflow';
-    this.dom.dbox.appendChild(this.dom.dframe);
-    this.dom.visibledFrame = document.createElement('div');
-    this.dom.visibledFrame.className = 'vis-item-visible-frame';
-    this.dom.dbox.appendChild(this.dom.visibledFrame);
-    this.dom.dcontent = document.createElement('div');
-    this.dom.dcontent.className = 'vis-item-content';
-    this.dom.dframe.appendChild(this.dom.dcontent);
-    this.dom.dcontent.innerHTML = "Lot X";
 
     // visible frame box (showing the frame that is always visible)
     this.dom.visibleFrame = document.createElement('div');
@@ -13030,13 +13034,10 @@ RangeItem.prototype.repositionX = function (limitSize) {
 
   if (this.options.rtl) {
     this.dom.box.style.right = this.right + 'px';
-    this.dom.dbox.style.right = this.right + 'px';
   } else {
     this.dom.box.style.left = this.left + 'px';
-    this.dom.dbox.style.left = this.left + 'px';
   }
   this.dom.box.style.width = boxWidth + 'px';
-  this.dom.dbox.style.width = boxWidth + 'px';
 
   switch (align) {
     case 'left':
@@ -18004,25 +18005,6 @@ ItemSet.prototype.show = function () {
     }
   }
 
-    // create global of item box
-    this.dom.dbox = document.createElement('div');
-    this.dom.dbox.className = 'vis-item vis-range';
-    this.dom.dbox.style.display = "block";
-    this.dom.dbox.style.position = "absolute";
-    this.dom.dbox.style.top = "41px";
-    this.dom.dbox.style.height = "31px";
-    this.body.dom.center.appendChild(this.dom.dbox)
-
-    this.dom.dframe = document.createElement('div');
-    this.dom.dframe.className = 'vis-item-overflow';
-    this.dom.dbox.appendChild(this.dom.dframe);
-    this.dom.visibledFrame = document.createElement('div');
-    this.dom.visibledFrame.className = 'vis-item-visible-frame';
-    this.dom.dbox.appendChild(this.dom.visibledFrame);
-    this.dom.dcontent = document.createElement('div');
-    this.dom.dcontent.className = 'vis-item-content';
-    this.dom.dframe.appendChild(this.dom.dcontent);
-    this.dom.dcontent.innerHTML = "Lot X";
 };
 
 /**
