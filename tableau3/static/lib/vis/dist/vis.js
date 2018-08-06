@@ -12600,7 +12600,10 @@ Group.prototype._updateItemsInRange = function (orderedItems, oldVisibleItems, r
 
   for (i = 0; i < visibleItems.length; i++) {
     visibleItems[i].repositionX();
+    this.dom.dbox.style.left = this.dom.dbox.nextSibling.style.left;
+    this.dom.dbox.style.width = this.dom.dbox.parentNode.lastChild.style.right;
   }
+  
   return visibleItems;
 };
 
