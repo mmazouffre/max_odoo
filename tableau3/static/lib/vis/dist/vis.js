@@ -11850,25 +11850,6 @@ Group.prototype._create = function () {
   foreground['timeline-group'] = this;
   this.dom.foreground = foreground;
 
-  // create global of item box
-  this.dom.dbox = document.createElement('div');
-  this.dom.dbox.className = 'vis-item vis-range';
-  this.dom.dbox.style.display = "block";
-  this.dom.dbox.style.position = "absolute";
-  this.dom.dbox.style.top = "41px";
-  this.dom.dbox.style.height = "31px";
-  this.dom.foreground.appendChild(this.dom.dbox);
-  this.dom.dframe = document.createElement('div');
-  this.dom.dframe.className = 'vis-item-overflow';
-  this.dom.dbox.appendChild(this.dom.dframe);
-  this.dom.visibledFrame = document.createElement('div');
-  this.dom.visibledFrame.className = 'vis-item-visible-frame';
-  this.dom.dbox.appendChild(this.dom.visibledFrame);
-  this.dom.dcontent = document.createElement('div');
-  this.dom.dcontent.className = 'vis-item-content';
-  this.dom.dframe.appendChild(this.dom.dcontent);
-  this.dom.dcontent.innerHTML = "Lot X";
-
   this.dom.background = document.createElement('div');
   this.dom.background.className = 'vis-group';
 
@@ -13100,7 +13081,11 @@ RangeItem.prototype.repositionY = function () {
   var box = this.dom.box;
 
   if (orientation == 'top') {
-    box.style.top = this.top + 'px';
+    if(this.data.timeset){
+      box.style.top = this.top + 36 + 'px';
+    } else {
+      box.style.top = this.top + 'px';
+    }
   } else {
     box.style.top = this.parent.height - this.top - this.height + 'px';
   }
@@ -17611,6 +17596,7 @@ function ItemSet(body, options) {
 
   var me = this;
   this.itemsData = null; // DataSet
+  this.subItemsData = null; //DataSet
   this.groupsData = null; // DataSet
 
   // listeners for the DataSet of the items
@@ -17670,6 +17656,7 @@ function ItemSet(body, options) {
   };
 
   this.items = {}; // object with an Item for every data item
+  this.subItems = {}; // object with an Item for every data subItem
   this.groups = {}; // Group object for every group
   this.groupIds = [];
 
@@ -18325,6 +18312,53 @@ ItemSet.prototype.setItems = function (items) {
 
     // add all new items
     ids = this.itemsData.getIds();
+    this._onAdd(ids);
+
+    // update the group holding all ungrouped items
+    this._updateUngrouped();
+  }
+
+  this.body.emitter.emit('_change', { queue: true });
+};
+
+/**
+ * Set subitems
+ * @param {vis.DataSet | null} items
+ */
+ItemSet.prototype.setSubItems = function (items) {
+  var me = this,
+      ids,
+      oldItemsData = this.subItemsData;
+
+  // replace the dataset
+  if (!items) {
+    this.subItemsData = null;
+  } else if (items instanceof DataSet || items instanceof DataView) {
+    this.subItemsData = items;
+  } else {
+    throw new TypeError('Data must be an instance of DataSet or DataView');
+  }
+
+  if (oldItemsData) {
+    // unsubscribe from old dataset
+    util.forEach(this.itemListeners, function (callback, event) {
+      oldItemsData.off(event, callback);
+    });
+
+    // remove all drawn items
+    ids = oldItemsData.getIds();
+    this._onRemove(ids);
+  }
+
+  if (this.subItemsData) {
+    // subscribe to new dataset
+    var id = this.id;
+    util.forEach(this.itemListeners, function (callback, event) {
+      me.subItemsData.on(event, callback, id);
+    });
+
+    // add all new items
+    ids = this.subItemsData.getIds();
     this._onAdd(ids);
 
     // update the group holding all ungrouped items
@@ -20568,6 +20602,7 @@ PointItem.prototype._updateDirtyDomComponents = function () {
     this._updateContents(this.dom.content);
     this._updateDataAttributes(this.dom.point);
     this._updateStyle(this.dom.point);
+
 
     var editable = this.editable.updateTime || this.editable.updateGroup;
     // update class
@@ -40942,20 +40977,14 @@ Timeline.prototype.setItems = function (items) {
   this.itemSet && this.itemSet.setItems(newDataSet);
 };
 
+
+
 /**
  * Set groups
  * @param {vis.DataSet | Array} groups
  */
-Timeline.prototype.setGroups = function (args) {
+Timeline.prototype.setGroups = function (groups) {
 
-  var groups, timeSet;
-
-  if(arguments.length == 1) {
-    groups = arguments[0];
-  } else {
-    groups = arguments[0];
-    timeSet = arguments[1];
-  }
 
   // convert to type DataSet when needed
   var newDataSet;
@@ -40976,9 +41005,6 @@ Timeline.prototype.setGroups = function (args) {
   this.groupsData = newDataSet;
   this.itemSet.setGroups(newDataSet);
 
-  if(timeSet != undefined){
-    this.setItems(timeSet);
-  }
 };
 
 /**

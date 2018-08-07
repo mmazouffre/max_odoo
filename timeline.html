@@ -40,20 +40,19 @@
   var middate = new Date();
   middate.setHours(date.getHours() + 110 );
 
-  var timeSet = new vis.DataSet([
-        {id: 1, group: 1, start: date, end: end, content : 'Task ' + 1},
-	{id: 2, group: 2, start: date, end: end, content : 'Task ' + 2},
-	{id: 3, group: 3, start: date, end: end, content : 'Task ' + 3},
+  var items = new vis.DataSet([
+        {id: 1, group: 1, start: date, end: end, content : 'Task ' + 1, timeset: true},
+	{id: 2, group: 2, start: date, end: end, content : 'Task ' + 2, timeset: true},
+	{id: 3, group: 3, start: date, end: end, content : 'Task ' + 3, timeset: true},
 	]);
 
 
-  var items = new vis.DataSet();
-	items.add({id: 1, group: 1, start: date, end: midend, content: 'Subtask ' + 1});
-        items.add({id: 2, group: 1, start: middate, end: end, content: 'Subtask ' + 2});
-	items.add({id: 3, group: 2, start: date, end: midend, content: 'SubTask ' + 1});
-	items.add({id: 4, group: 2, start: middate, end: end, content: 'Subtask ' + 2});
-	items.add({id: 5, group: 3, start: date, end: midend, content: 'Subtask ' + 1});
-	items.add({id: 6, group: 3, start: middate, end: end, content: 'Subtask ' + 2});
+	items.add({id: 4, group: 1, start: date, end: midend, content: 'Subtask ' + 1, timeset: false});
+        items.add({id: 5, group: 1, start: middate, end: end, content: 'Subtask ' + 2, timeset: false});
+	items.add({id: 6, group: 2, start: date, end: midend, content: 'SubTask ' + 1, timeset: false});
+	items.add({id: 7, group: 2, start: middate, end: end, content: 'Subtask ' + 2, timeset: false});
+	items.add({id: 8, group: 3, start: date, end: midend, content: 'Subtask ' + 1, timeset: false});
+	items.add({id: 9, group: 3, start: middate, end: end, content: 'Subtask ' + 2, timeset: false});
 
 
   // Configuration for the Timeline
@@ -70,8 +69,8 @@
   };
 
   timeline = new vis.Timeline(container, null, options);
-  timeline.setGroups(groups, timeSet);
-  //timeline.setItems(items);
+  timeline.setGroups(groups);
+  timeline.setItems(items);
 
 
 </script>
