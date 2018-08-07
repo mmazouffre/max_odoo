@@ -11850,6 +11850,25 @@ Group.prototype._create = function () {
   foreground['timeline-group'] = this;
   this.dom.foreground = foreground;
 
+  // create global of item box
+  this.dom.dbox = document.createElement('div');
+  this.dom.dbox.className = 'vis-item vis-range';
+  this.dom.dbox.style.display = "block";
+  this.dom.dbox.style.position = "absolute";
+  this.dom.dbox.style.top = "41px";
+  this.dom.dbox.style.height = "31px";
+  this.dom.foreground.appendChild(this.dom.dbox);
+  this.dom.dframe = document.createElement('div');
+  this.dom.dframe.className = 'vis-item-overflow';
+  this.dom.dbox.appendChild(this.dom.dframe);
+  this.dom.visibledFrame = document.createElement('div');
+  this.dom.visibledFrame.className = 'vis-item-visible-frame';
+  this.dom.dbox.appendChild(this.dom.visibledFrame);
+  this.dom.dcontent = document.createElement('div');
+  this.dom.dcontent.className = 'vis-item-content';
+  this.dom.dframe.appendChild(this.dom.dcontent);
+  this.dom.dcontent.innerHTML = "Lot X";
+
   this.dom.background = document.createElement('div');
   this.dom.background.className = 'vis-group';
 
@@ -12581,7 +12600,10 @@ Group.prototype._updateItemsInRange = function (orderedItems, oldVisibleItems, r
 
   for (i = 0; i < visibleItems.length; i++) {
     visibleItems[i].repositionX();
+    this.dom.dbox.style.left = this.dom.dbox.nextSibling.style.left;
+    this.dom.dbox.style.right = this.dom.dbox.parentNode.lastChild.style.right;
   }
+  
   return visibleItems;
 };
 
@@ -12781,7 +12803,7 @@ function RangeItem(data, conversion, options) {
 
 RangeItem.prototype = new Item(null, null, null);
 
-RangeItem.prototype.baseClassName = 'vis-item vis-range collapsible';
+RangeItem.prototype.baseClassName = 'vis-item vis-range';
 
 /**
  * Check whether this item is visible inside given range
@@ -12803,17 +12825,13 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.box = document.createElement('div');
     // className is updated in redraw()
 
-    // create detail of item box
-    this.dom.dbox = document.createElement('div');
-    this.dom.dbox.className = 'content';
-    this.dom.dbox.innerHTML = 'coucou';
-    this.dom.dbox.style.display = "block";
-    this.dom.dbox.style.position = "absolute";
+
 
     // frame box (to prevent the item contents from overflowing)
     this.dom.frame = document.createElement('div');
     this.dom.frame.className = 'vis-item-overflow';
     this.dom.box.appendChild(this.dom.frame);
+
 
     // visible frame box (showing the frame that is always visible)
     this.dom.visibleFrame = document.createElement('div');
@@ -12824,6 +12842,7 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.content = document.createElement('div');
     this.dom.content.className = 'vis-item-content';
     this.dom.frame.appendChild(this.dom.content);
+
 
     // attach this item as attribute
     this.dom.box['timeline-item'] = this;
@@ -12844,7 +12863,6 @@ RangeItem.prototype._appendDomElement = function () {
       throw new Error('Cannot redraw item: parent has no foreground container element');
     }
     foreground.appendChild(this.dom.box);
-    foreground.appendChild(this.dom.dbox);
   }
   this.displayed = true;
 };
@@ -12869,15 +12887,6 @@ RangeItem.prototype._updateDirtyDomComponents = function () {
     // this causes an extra browser repaint/reflow, but so be it
     this.dom.content.style.maxWidth = 'none';
 
-    //adding collapsible event
-    var collcontent = this.dom.box.nextElementSibling;
-    if (this.selected) {
-        collcontent.style.display = "block";
-        collcontent.style.left = this.dom.box.style.left;
-        collcontent.style.top = "46px"
-    } else {
-        collcontent.style.display = "none";
-    }
   }
 };
 
@@ -17998,6 +18007,7 @@ ItemSet.prototype.show = function () {
       this.body.dom.left.appendChild(this.dom.labelSet);
     }
   }
+
 };
 
 /**

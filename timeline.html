@@ -40,6 +40,12 @@
   var middate = new Date();
   middate.setHours(date.getHours() + 110 );
 
+  var timeSet = new vis.DataSet([
+        {id: 1, group: 1, start: date, end: end, content : 'Task ' + 1},
+	{id: 2, group: 2, start: date, end: end, content : 'Task ' + 2},
+	{id: 3, group: 3, start: date, end: end, content : 'Task ' + 3},
+	]);
+
 
   var items = new vis.DataSet();
 	items.add({id: 1, group: 1, start: date, end: midend, content: 'Subtask ' + 1});
@@ -64,8 +70,8 @@
   };
 
   timeline = new vis.Timeline(container, null, options);
-  timeline.setGroups(groups);
-  timeline.setItems(items);
+  timeline.setGroups(groups, timeSet);
+  //timeline.setItems(items);
 
 
 </script>

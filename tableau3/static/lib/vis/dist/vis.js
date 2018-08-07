@@ -12600,8 +12600,6 @@ Group.prototype._updateItemsInRange = function (orderedItems, oldVisibleItems, r
 
   for (i = 0; i < visibleItems.length; i++) {
     visibleItems[i].repositionX();
-    this.dom.dbox.style.left = this.dom.dbox.nextSibling.style.left;
-    this.dom.dbox.style.width = this.dom.dbox.parentNode.lastChild.style.right;
   }
   
   return visibleItems;
@@ -40948,7 +40946,17 @@ Timeline.prototype.setItems = function (items) {
  * Set groups
  * @param {vis.DataSet | Array} groups
  */
-Timeline.prototype.setGroups = function (groups) {
+Timeline.prototype.setGroups = function (args) {
+
+  var groups, timeSet;
+
+  if(arguments.length == 1) {
+    groups = arguments[0];
+  } else {
+    groups = arguments[0];
+    timeSet = arguments[1];
+  }
+
   // convert to type DataSet when needed
   var newDataSet;
   if (!groups) {
@@ -40967,6 +40975,10 @@ Timeline.prototype.setGroups = function (groups) {
 
   this.groupsData = newDataSet;
   this.itemSet.setGroups(newDataSet);
+
+  if(timeSet != undefined){
+    this.setItems(timeSet);
+  }
 };
 
 /**
