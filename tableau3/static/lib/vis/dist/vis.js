@@ -12880,7 +12880,6 @@ RangeItem.prototype._updateDirtyDomComponents = function () {
     if (this.data.ontask != undefined){
       if(this.data.ontask < 100){
 	 var currentTask = this.data.start.getTime() + (this.data.ontask/100) * (this.data.end.getTime() - this.data.start.getTime());
-	 console.log(currentTask);
          if (currentTask < Date.now()){
            this.dom.box.style.backgroundColor = "red";
          } else {
