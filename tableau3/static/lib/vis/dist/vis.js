@@ -12811,6 +12811,16 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.frame.className = 'vis-item-overflow';
     this.dom.box.appendChild(this.dom.frame);
 
+    // progress bar
+    if (this.data.ontask != undefined){
+	this.dom.line = document.createElement('div');
+	this.dom.line.style.position = "absolute";
+	this.dom.line.style.borderLeft = "2px solid black";
+	this.dom.line.style.height = "31px";
+	this.dom.line.style.top = "0px";
+	this.dom.line.style.left = this.data.ontask + "%";
+	this.dom.box.appendChild(this.dom.line);
+    }
 
     // visible frame box (showing the frame that is always visible)
     this.dom.visibleFrame = document.createElement('div');
@@ -12866,6 +12876,20 @@ RangeItem.prototype._updateDirtyDomComponents = function () {
     // this causes an extra browser repaint/reflow, but so be it
     this.dom.content.style.maxWidth = 'none';
 
+    // update color if the progress bar not on time
+    if (this.data.ontask != undefined){
+      if(this.data.ontask < 100){
+	 var currentTask = this.data.start.getTime() + (this.data.ontask/100) * (this.data.end.getTime() - this.data.start.getTime());
+	 console.log(currentTask);
+         if (currentTask < Date.now()){
+           this.dom.box.style.backgroundColor = "red";
+         } else {
+	   this.dom.box.style.backgroundColor = "#D5DDF6";
+	 }
+      } else {
+	 this.dom.box.style.backgroundColor = "lime";
+      }
+    }
   }
 };
 
