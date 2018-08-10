@@ -11,6 +11,7 @@
     'depends': [
         'web',
 	'web_kanban',
+	'project',
     ],
     'qweb': [
         'static/src/xml/tableau.xml',

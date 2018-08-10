@@ -9,10 +9,13 @@ odoo.define('tableau.tableau', function (require) {
     var Model = require('web.DataModel');
     var time = require('web.time');
     var View = require('web.View');
+    var KanbanRecord = require('web_kanban.Record')
 
     var _t = core._t;
     var _lt = core._lt;
     var QWeb = core.qweb;
+
+    
     
     var myView = View.extend({
 	template: "Dash",
@@ -20,11 +23,18 @@ odoo.define('tableau.tableau', function (require) {
 	icon : 'fa-project-diagram',
    
         init : function(parent,dataset,view_id,options) {
-		
+
+		  var widgi = document.createElement('div');
+		  widgi.className = 'oe_kanban_card';
+		  var widgo = document.createElement('div');
+		  widgi.className = 'oe_kanban_card';
+		  var widgu = document.createElement('div');
+		  widgi.className = 'oe_kanban_card';
+
 		  this.groups = new vis.DataSet([
-			{id: 1, content: 'Widgi'},
-			{id: 2, content: 'Widgo'},
-			{id: 3, content: 'Widgu'},
+			{id: 1, content: widgi},
+			{id: 2, content: widgo},
+			{id: 3, content: widgu},
 			]);
 
 		  var date = new Date();
@@ -70,14 +80,117 @@ odoo.define('tableau.tableau', function (require) {
 	  };
 
 
-	  var container = this.$el.get(2);
-	  console.log(container);
+	  var container = this.$el.get(0);
 
-	  var timeline = new vis.Timeline(container, null, options);
-	  timeline.setGroups(this.groups);
-	  timeline.setItems(this.items);
+	  this.timeline = new vis.Timeline(container, null, options);
+	  this.timeline.setGroups(this.groups);
+	  this.timeline.setItems(this.items);
 		},
 
+	do_search: function (domains, contexts, group_bys) {
+            var self = this;
+            self.last_domains = domains;
+	    self.last_contexts = contexts;
+	    // select the group by
+            var n_group_bys = [];
+            if (this.fields_view.arch.attrs.default_group_by) {
+                n_group_bys = this.fields_view.arch.attrs.default_group_by.split(',');
+            }
+            if (group_bys.length) {
+                n_group_bys = group_bys;
+            }
+            self.last_group_bys = n_group_bys;
+            // gather the fields to get
+            var fields = _.compact(_.map(["date_start", "date_delay", "date_stop", "progress"], function (key) {
+                return self.fields_view.arch.attrs[key] || '';
+            }));
+
+            fields = _.uniq(fields.concat(_.pluck(this.colors, "field").concat(n_group_bys)));
+            return $.when(this.has_been_loaded).then(function () {
+                return self.dataset.read_slice(fields, {
+                    domain: domains,
+                    context: contexts
+                }).then(function (data) {
+                    return self.on_data_loaded(data, n_group_bys);
+                });
+            });
+
+	},
+
+	reload: function () {
+            var self = this;
+            if (this.last_domains !== undefined) {
+                self.current_window = self.timeline.getWindow();
+                return this.do_search(this.last_domains, this.last_contexts, this.last_group_bys);
+            }
+	},
+
+        on_data_loaded: function (events, group_bys) {
+            var self = this;
+            var ids = _.pluck(events, "id");
+            return this.dataset.name_get(ids).then(function (names) {
+                var nevents = _.map(events, function (event) {
+                    return _.extend({
+                        __name: _.detect(names, function (name) {
+                            return name[0] == event.id;
+                        })[1]
+                    }, event);
+                });
+                return self.on_data_loaded_2(nevents, group_bys);
+            });
+        },
+
+        on_data_loaded_2: function (events, group_bys) {
+            var self = this;
+            var data = [];
+            var groups = [];
+            this.grouped_by = group_bys;
+            _.each(events, function (event) {
+                if (event[self.date_start]) {
+                    data.push(self.event_data_transform(event));
+                }
+            });
+            // get the groups
+            var split_groups = function (events, group_bys) {
+                if (group_bys.length === 0)
+                    return events;
+                var groups = [];
+                groups.push({id: -1, content: _t('-')})
+                _.each(events, function (event) {
+                    var group_name = event[_.first(group_bys)];
+                    if (group_name) {
+                        var group = _.find(groups, function (group) {
+                            return _.isEqual(group.id, group_name[0]);
+                        });
+                        if (group === undefined) {
+                            group = {id: group_name[0], content: group_name[1]};
+                            groups.push(group);
+                        }
+                    }
+                });
+                return groups;
+            }
+	    var options = {
+              editable: this.is_action_enabled('edit'),
+              deletable: this.is_action_enabled('delete'),
+              fields: this.fields_view.fields,
+              qweb: Qweb,
+              model: Model,
+              read_only_mode: this.options.read_only_mode,
+            };
+            var groups = split_groups(events, group_bys);
+	    var groups1 = new vis.DataSet();
+	    groups.forEach(function(element) {
+	      var kanban_record = new KanbanRecord(self, element, options);
+	      groups1.add({id: element.id, content: kanban_record});
+	    });
+	    console.log(groups1);
+            this.timeline.setGroups(groups1);
+            this.timeline.setItems(data);
+            if (!this.mode || this.mode == 'fit'){
+                this.timeline.fit();
+            }
+	},
     });
 
 

@@ -11839,7 +11839,7 @@ Group.prototype._create = function () {
 
 
   //adding a button in the inner
-  var button = document.createElement('button');
+  var button = document.createElement('div');
   inner.appendChild(button);
   this.dom.button = button;
   this.dom.button.style.height = "66px"
@@ -11874,6 +11874,7 @@ Group.prototype.setData = function (data) {
   // update contents
   var content;
   var templateFunction;
+  var kanban;
 
   if (this.itemSet.options && this.itemSet.options.groupTemplate) {
     templateFunction = this.itemSet.options.groupTemplate.bind(this);
@@ -11882,92 +11883,93 @@ Group.prototype.setData = function (data) {
     content = data && data.content;
   }
 
-  if (content instanceof Element) {
-    this.dom.button.appendChild(content);
-    while (this.dom.button.firstChild) {
-      this.dom.button.removeChild(this.dom.button.firstChild);
-    }
-    this.dom.button.appendChild(content);
-  } else if (content instanceof Object) {
-    templateFunction(data, this.dom.button);
-  } else if (content !== undefined && content !== null) {
-    this.dom.button.innerHTML = content;
-  } else {
-    this.dom.button.innerHTML = this.groupId || ''; // groupId can be null
-  }
+	  if (content instanceof Element) {
+	    this.dom.button.appendChild(content);
+	    while (this.dom.button.firstChild) {
+	      this.dom.button.removeChild(this.dom.button.firstChild);
+	    }
+	    this.dom.button.appendChild(content);
+	  } else if (content instanceof Object) {
+	    templateFunction(data, this.dom.button);
+	  } else if (content !== undefined && content !== null) {
+	    this.dom.button.innerHTML = content;
+	  } else {
+	    this.dom.button.innerHTML = this.groupId || ''; // groupId can be null
+	  }
 
-  // update title
-  this.dom.label.title = data && data.title || '';
-  if (!this.dom.button.firstChild) {
-    util.addClassName(this.dom.button, 'vis-hidden');
-  } else {
-    util.removeClassName(this.dom.button, 'vis-hidden');
-  }
+	  // update title
+	  this.dom.label.title = data && data.title || '';
+	  if (!this.dom.button.firstChild) {
+	    util.addClassName(this.dom.button, 'vis-hidden');
+	  } else {
+	    util.removeClassName(this.dom.button, 'vis-hidden');
+	  }
 
-  if (data && data.nestedGroups) {
-    if (!this.nestedGroups || this.nestedGroups != data.nestedGroups) {
-      this.nestedGroups = data.nestedGroups;
-    }
+	  if (data && data.nestedGroups) {
+	    if (!this.nestedGroups || this.nestedGroups != data.nestedGroups) {
+	      this.nestedGroups = data.nestedGroups;
+	    }
 
-    if (data.showNested !== undefined || this.showNested === undefined) {
-      if (data.showNested == false) {
-        this.showNested = false;
-      } else {
-        this.showNested = true;
-      }
-    }
+	    if (data.showNested !== undefined || this.showNested === undefined) {
+	      if (data.showNested == false) {
+		this.showNested = false;
+	      } else {
+		this.showNested = true;
+	      }
+	    }
 
-    util.addClassName(this.dom.label, 'vis-nesting-group');
-    var collapsedDirClassName = this.itemSet.options.rtl ? 'collapsed-rtl' : 'collapsed';
-    if (this.showNested) {
-      util.removeClassName(this.dom.label, collapsedDirClassName);
-      util.addClassName(this.dom.label, 'expanded');
-    } else {
-      util.removeClassName(this.dom.label, 'expanded');
-      util.addClassName(this.dom.label, collapsedDirClassName);
-    }
-  } else if (this.nestedGroups) {
-    this.nestedGroups = null;
-    collapsedDirClassName = this.itemSet.options.rtl ? 'collapsed-rtl' : 'collapsed';
-    util.removeClassName(this.dom.label, collapsedDirClassName);
-    util.removeClassName(this.dom.label, 'expanded');
-    util.removeClassName(this.dom.label, 'vis-nesting-group');
-  }
+	    util.addClassName(this.dom.label, 'vis-nesting-group');
+	    var collapsedDirClassName = this.itemSet.options.rtl ? 'collapsed-rtl' : 'collapsed';
+	    if (this.showNested) {
+	      util.removeClassName(this.dom.label, collapsedDirClassName);
+	      util.addClassName(this.dom.label, 'expanded');
+	    } else {
+	      util.removeClassName(this.dom.label, 'expanded');
+	      util.addClassName(this.dom.label, collapsedDirClassName);
+	    }
+	  } else if (this.nestedGroups) {
+	    this.nestedGroups = null;
+	    collapsedDirClassName = this.itemSet.options.rtl ? 'collapsed-rtl' : 'collapsed';
+	    util.removeClassName(this.dom.label, collapsedDirClassName);
+	    util.removeClassName(this.dom.label, 'expanded');
+	    util.removeClassName(this.dom.label, 'vis-nesting-group');
+	  }
 
-  if (data && data.nestedInGroup) {
-    util.addClassName(this.dom.label, 'vis-nested-group');
-    if (this.itemSet.options && this.itemSet.options.rtl) {
-      this.dom.button.style.paddingRight = '30px';
-    } else {
-      this.dom.button.style.paddingLeft = '30px';
-    }
-  }
+	  if (data && data.nestedInGroup) {
+	    util.addClassName(this.dom.label, 'vis-nested-group');
+	    if (this.itemSet.options && this.itemSet.options.rtl) {
+	      this.dom.button.style.paddingRight = '30px';
+	    } else {
+	      this.dom.button.style.paddingLeft = '30px';
+	    }
+	  }
 
-  // update className
-  var className = data && data.className || null;
-  if (className != this.className) {
-    if (this.className) {
-      util.removeClassName(this.dom.label, this.className);
-      util.removeClassName(this.dom.foreground, this.className);
-      util.removeClassName(this.dom.background, this.className);
-      util.removeClassName(this.dom.axis, this.className);
-    }
-    util.addClassName(this.dom.label, className);
-    util.addClassName(this.dom.foreground, className);
-    util.addClassName(this.dom.background, className);
-    util.addClassName(this.dom.axis, className);
-    this.className = className;
-  }
+	  // update className
+	  var className = data && data.className || null;
+	  if (className != this.className) {
+	    if (this.className) {
+	      util.removeClassName(this.dom.label, this.className);
+	      util.removeClassName(this.dom.foreground, this.className);
+	      util.removeClassName(this.dom.background, this.className);
+	      util.removeClassName(this.dom.axis, this.className);
+	    }
+	    util.addClassName(this.dom.label, className);
+	    util.addClassName(this.dom.foreground, className);
+	    util.addClassName(this.dom.background, className);
+	    util.addClassName(this.dom.axis, className);
+	    this.className = className;
+	  }
 
-  // update style
-  if (this.style) {
-    util.removeCssText(this.dom.label, this.style);
-    this.style = null;
-  }
-  if (data && data.style) {
-    util.addCssText(this.dom.label, data.style);
-    this.style = data.style;
-  }
+	  // update style
+	  if (this.style) {
+	    util.removeCssText(this.dom.label, this.style);
+	    this.style = null;
+	  }
+	  if (data && data.style) {
+	    util.addCssText(this.dom.label, data.style);
+	    this.style = data.style;
+	  }
+
 };
 
 /**

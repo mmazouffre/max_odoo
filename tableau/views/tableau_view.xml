@@ -16,6 +16,20 @@
 	    </field>
         </record>      
 
+        <record id="default_tasks_tableau" model="ir.ui.view">
+            <field name="name">Tableau par défaut</field>
+            <field name="model">project.task</field>
+            <field name="type">tableau</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml" >
+		<tableau>
+                      <h1> Les poires c'est bon!</h1>
+		      <div>
+                           <dash/>
+                      </div>
+                </tableau>
+	    </field>
+        </record>      
 
         <!-- List of users -->
                 
@@ -34,7 +48,8 @@
 
 	<record id="sample_html" model="ir.actions.act_window">
 	    <field name="name">A page</field>
-	    <field name="res_model">res.users</field>
+	    <field name="res_model">project.task</field>
+            <field name="view_mode">tree,form,tableau</field>
             <field name="arch" type="xml">
 		<dash>Hello</dash>
             </field>

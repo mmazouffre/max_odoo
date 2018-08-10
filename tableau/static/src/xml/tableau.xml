@@ -1,9 +1,5 @@
 <template>
-  <t t-name="Dash">
-    <div>This is a division</div>
-   
+  <t t-name="Dash">   
     <div id="visualization"></div>
-
-
    </t>
 </template>
