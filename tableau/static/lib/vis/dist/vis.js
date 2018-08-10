@@ -11837,6 +11837,14 @@ Group.prototype._create = function () {
   label.appendChild(inner);
   this.dom.inner = inner;
 
+
+  //adding a button in the inner
+  var button = document.createElement('button');
+  inner.appendChild(button);
+  this.dom.button = button;
+  this.dom.button.style.height = "66px"
+
+  
   var foreground = document.createElement('div');
   foreground.className = 'vis-group';
   foreground['timeline-group'] = this;
@@ -11869,31 +11877,31 @@ Group.prototype.setData = function (data) {
 
   if (this.itemSet.options && this.itemSet.options.groupTemplate) {
     templateFunction = this.itemSet.options.groupTemplate.bind(this);
-    content = templateFunction(data, this.dom.inner);
+    content = templateFunction(data, this.dom.button);
   } else {
     content = data && data.content;
   }
 
   if (content instanceof Element) {
-    this.dom.inner.appendChild(content);
-    while (this.dom.inner.firstChild) {
-      this.dom.inner.removeChild(this.dom.inner.firstChild);
+    this.dom.button.appendChild(content);
+    while (this.dom.button.firstChild) {
+      this.dom.button.removeChild(this.dom.button.firstChild);
     }
-    this.dom.inner.appendChild(content);
+    this.dom.button.appendChild(content);
   } else if (content instanceof Object) {
-    templateFunction(data, this.dom.inner);
+    templateFunction(data, this.dom.button);
   } else if (content !== undefined && content !== null) {
-    this.dom.inner.innerHTML = content;
+    this.dom.button.innerHTML = content;
   } else {
-    this.dom.inner.innerHTML = this.groupId || ''; // groupId can be null
+    this.dom.button.innerHTML = this.groupId || ''; // groupId can be null
   }
 
   // update title
   this.dom.label.title = data && data.title || '';
-  if (!this.dom.inner.firstChild) {
-    util.addClassName(this.dom.inner, 'vis-hidden');
+  if (!this.dom.button.firstChild) {
+    util.addClassName(this.dom.button, 'vis-hidden');
   } else {
-    util.removeClassName(this.dom.inner, 'vis-hidden');
+    util.removeClassName(this.dom.button, 'vis-hidden');
   }
 
   if (data && data.nestedGroups) {
@@ -11929,9 +11937,9 @@ Group.prototype.setData = function (data) {
   if (data && data.nestedInGroup) {
     util.addClassName(this.dom.label, 'vis-nested-group');
     if (this.itemSet.options && this.itemSet.options.rtl) {
-      this.dom.inner.style.paddingRight = '30px';
+      this.dom.button.style.paddingRight = '30px';
     } else {
-      this.dom.inner.style.paddingLeft = '30px';
+      this.dom.button.style.paddingLeft = '30px';
     }
   }
 
@@ -12574,6 +12582,7 @@ Group.prototype._updateItemsInRange = function (orderedItems, oldVisibleItems, r
   for (i = 0; i < visibleItems.length; i++) {
     visibleItems[i].repositionX();
   }
+  
   return visibleItems;
 };
 
@@ -12795,10 +12804,23 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.box = document.createElement('div');
     // className is updated in redraw()
 
+
+
     // frame box (to prevent the item contents from overflowing)
     this.dom.frame = document.createElement('div');
     this.dom.frame.className = 'vis-item-overflow';
     this.dom.box.appendChild(this.dom.frame);
+
+    // progress bar
+    if (this.data.ontask != undefined){
+	this.dom.line = document.createElement('div');
+	this.dom.line.style.position = "absolute";
+	this.dom.line.style.borderLeft = "2px solid black";
+	this.dom.line.style.height = "31px";
+	this.dom.line.style.top = "0px";
+	this.dom.line.style.left = this.data.ontask + "%";
+	this.dom.box.appendChild(this.dom.line);
+    }
 
     // visible frame box (showing the frame that is always visible)
     this.dom.visibleFrame = document.createElement('div');
@@ -12810,12 +12832,15 @@ RangeItem.prototype._createDomElement = function () {
     this.dom.content.className = 'vis-item-content';
     this.dom.frame.appendChild(this.dom.content);
 
+
     // attach this item as attribute
     this.dom.box['timeline-item'] = this;
 
     this.dirty = true;
   }
 };
+
+
 
 RangeItem.prototype._appendDomElement = function () {
   if (!this.parent) {
@@ -12850,6 +12875,20 @@ RangeItem.prototype._updateDirtyDomComponents = function () {
     // turn off max-width to be able to calculate the real width
     // this causes an extra browser repaint/reflow, but so be it
     this.dom.content.style.maxWidth = 'none';
+
+    // update color if the progress bar not on time
+    if (this.data.ontask != undefined){
+      if(this.data.ontask < 100){
+	 var currentTask = this.data.start.getTime() + (this.data.ontask/100) * (this.data.end.getTime() - this.data.start.getTime());
+         if (currentTask < Date.now()){
+           this.dom.box.style.backgroundColor = "red";
+         } else {
+	   this.dom.box.style.backgroundColor = "#D5DDF6";
+	 }
+      } else {
+	 this.dom.box.style.backgroundColor = "lime";
+      }
+    }
   }
 };
 
@@ -13065,7 +13104,11 @@ RangeItem.prototype.repositionY = function () {
   var box = this.dom.box;
 
   if (orientation == 'top') {
-    box.style.top = this.top + 'px';
+    if(this.data.timeset){
+      box.style.top = this.top + 36 + 'px';
+    } else {
+      box.style.top = this.top + 'px';
+    }
   } else {
     box.style.top = this.parent.height - this.top - this.height + 'px';
   }
@@ -17576,6 +17619,7 @@ function ItemSet(body, options) {
 
   var me = this;
   this.itemsData = null; // DataSet
+  this.subItemsData = null; //DataSet
   this.groupsData = null; // DataSet
 
   // listeners for the DataSet of the items
@@ -17635,6 +17679,7 @@ function ItemSet(body, options) {
   };
 
   this.items = {}; // object with an Item for every data item
+  this.subItems = {}; // object with an Item for every data subItem
   this.groups = {}; // Group object for every group
   this.groupIds = [];
 
@@ -17970,6 +18015,7 @@ ItemSet.prototype.show = function () {
       this.body.dom.left.appendChild(this.dom.labelSet);
     }
   }
+
 };
 
 /**
@@ -18289,6 +18335,53 @@ ItemSet.prototype.setItems = function (items) {
 
     // add all new items
     ids = this.itemsData.getIds();
+    this._onAdd(ids);
+
+    // update the group holding all ungrouped items
+    this._updateUngrouped();
+  }
+
+  this.body.emitter.emit('_change', { queue: true });
+};
+
+/**
+ * Set subitems
+ * @param {vis.DataSet | null} items
+ */
+ItemSet.prototype.setSubItems = function (items) {
+  var me = this,
+      ids,
+      oldItemsData = this.subItemsData;
+
+  // replace the dataset
+  if (!items) {
+    this.subItemsData = null;
+  } else if (items instanceof DataSet || items instanceof DataView) {
+    this.subItemsData = items;
+  } else {
+    throw new TypeError('Data must be an instance of DataSet or DataView');
+  }
+
+  if (oldItemsData) {
+    // unsubscribe from old dataset
+    util.forEach(this.itemListeners, function (callback, event) {
+      oldItemsData.off(event, callback);
+    });
+
+    // remove all drawn items
+    ids = oldItemsData.getIds();
+    this._onRemove(ids);
+  }
+
+  if (this.subItemsData) {
+    // subscribe to new dataset
+    var id = this.id;
+    util.forEach(this.itemListeners, function (callback, event) {
+      me.subItemsData.on(event, callback, id);
+    });
+
+    // add all new items
+    ids = this.subItemsData.getIds();
     this._onAdd(ids);
 
     // update the group holding all ungrouped items
@@ -20533,6 +20626,7 @@ PointItem.prototype._updateDirtyDomComponents = function () {
     this._updateDataAttributes(this.dom.point);
     this._updateStyle(this.dom.point);
 
+
     var editable = this.editable.updateTime || this.editable.updateGroup;
     // update class
     var className = (this.data.className ? ' ' + this.data.className : '') + (this.selected ? ' vis-selected' : '') + (editable ? ' vis-editable' : ' vis-readonly');
@@ -20540,6 +20634,7 @@ PointItem.prototype._updateDirtyDomComponents = function () {
     this.dom.dot.className = 'vis-item vis-dot' + className;
   }
 };
+
 
 PointItem.prototype._getDomComponentsSizes = function () {
   return {
@@ -40905,11 +41000,15 @@ Timeline.prototype.setItems = function (items) {
   this.itemSet && this.itemSet.setItems(newDataSet);
 };
 
+
+
 /**
  * Set groups
  * @param {vis.DataSet | Array} groups
  */
 Timeline.prototype.setGroups = function (groups) {
+
+
   // convert to type DataSet when needed
   var newDataSet;
   if (!groups) {
@@ -40928,6 +41027,7 @@ Timeline.prototype.setGroups = function (groups) {
 
   this.groupsData = newDataSet;
   this.itemSet.setGroups(newDataSet);
+
 };
 
 /**
@@ -50806,7 +50906,7 @@ var ClusterEngine = function () {
         options.clusterNodeProperties.fixed = {};
         options.clusterNodeProperties.fixed.x = node.options.fixed.x;
         options.clusterNodeProperties.fixed.y = node.options.fixed.y;
-      }
+      }childNodesObj
 
       var childNodesObj = {};
       var childEdgesObj = {};

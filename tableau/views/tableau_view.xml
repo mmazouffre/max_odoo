@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem name="Tableau" 
-	id="menu_main_pm" 
-	web_icon="tableau,static/description/icon.png"
-	sequence="2"/>
+
+        <record id="default_users_tableau" model="ir.ui.view">
+            <field name="name">Tableau par défaut</field>
+            <field name="model">res.users</field>
+            <field name="type">tableau</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml" >
+		<tableau>
+                      <h1> Les prunes c'est bon!</h1>
+		      <div>
+                           <dash/>
+                      </div>
+                </tableau>
+	    </field>
+        </record>      
 
 
         <!-- List of users -->
@@ -30,8 +41,11 @@
 	</record>
         
         
+   <menuitem name="Tableau" id="menu_main_pm" web_icon="tableau,static/description/icon.png" sequence="2"/>
+
     <menuitem id="menu_tableau" name="Dashboard" parent="menu_main_pm" sequence="1"/>
     
     <menuitem id="test" name="Coucou" parent="menu_tableau" sequence="3" action="sample_user_list"/>
     <menuitem id="test2" name="Une page" parent="menu_tableau" sequence="4" action="sample_html"/>
+
 </odoo>
