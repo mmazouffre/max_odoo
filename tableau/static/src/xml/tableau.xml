@@ -2,4 +2,8 @@
   <t t-name="Dash">   
     <div id="visualization"></div>
    </t>
+  <t t-name="kanban-box">   
+    <div>Bonjour</div>
+   </t>
 </template>
+

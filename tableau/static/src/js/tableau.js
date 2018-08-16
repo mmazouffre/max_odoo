@@ -174,15 +174,15 @@ odoo.define('tableau.tableau', function (require) {
               editable: this.is_action_enabled('edit'),
               deletable: this.is_action_enabled('delete'),
               fields: this.fields_view.fields,
-              qweb: Qweb,
-              model: Model,
+              qweb: require('web.core').qweb,
+              model: require('web.DataModel'),
               read_only_mode: this.options.read_only_mode,
             };
             var groups = split_groups(events, group_bys);
 	    var groups1 = new vis.DataSet();
 	    groups.forEach(function(element) {
-	      var kanban_record = new KanbanRecord(self, element, options);
-	      groups1.add({id: element.id, content: kanban_record});
+	      console.log(element);
+	      groups1.add({id: element.id, content: element.__name, kanban: "hello"});
 	    });
 	    console.log(groups1);
             this.timeline.setGroups(groups1);

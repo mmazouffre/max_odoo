@@ -54,6 +54,8 @@
 		<dash>Hello</dash>
             </field>
 	</record>
+
+
         
         
    <menuitem name="Tableau" id="menu_main_pm" web_icon="tableau,static/description/icon.png" sequence="2"/>
@@ -62,5 +64,9 @@
     
     <menuitem id="test" name="Coucou" parent="menu_tableau" sequence="3" action="sample_user_list"/>
     <menuitem id="test2" name="Une page" parent="menu_tableau" sequence="4" action="sample_html"/>
+
+
+
+
 
 </odoo>
