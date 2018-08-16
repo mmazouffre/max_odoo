@@ -11836,19 +11836,13 @@ Group.prototype._create = function () {
   inner.className = 'vis-inner';
   label.appendChild(inner);
   this.dom.inner = inner;
-  console.log(this.data.kanban);
-  if(this.data.kanban != undefined){
-    var button = document.createElement('div');
-    inner.appendChild(button);
-    this.dom.button = button;
-    this.dom.button.style.height = "66px";
-  } else {
-    //adding a button in the inner
-    var button = document.createElement('button');
-    inner.appendChild(button);
-    this.dom.button = button;
-    this.dom.button.style.height = "66px";
-  }
+
+
+  //adding a button in the inner
+  var button = document.createElement('div');
+  inner.appendChild(button);
+  this.dom.button = button;
+  this.dom.button.style.height = "66px"
 
   
   var foreground = document.createElement('div');
@@ -11881,13 +11875,18 @@ Group.prototype.setData = function (data) {
   var content;
   var templateFunction;
   var kanban;
-
+  console.log(data);
   if (this.itemSet.options && this.itemSet.options.groupTemplate) {
     templateFunction = this.itemSet.options.groupTemplate.bind(this);
     content = templateFunction(data, this.dom.button);
   } else {
     content = data && data.content;
   }
+  if (data!= null && data.kanban != undefined){
+    kanban = data.kanban;
+    this.dom.button.appendChild(kanban);
+    console.log(kanban);
+  } else {
 
 	  if (content instanceof Element) {
 	    this.dom.button.appendChild(content);
@@ -11975,7 +11974,7 @@ Group.prototype.setData = function (data) {
 	    util.addCssText(this.dom.label, data.style);
 	    this.style = data.style;
 	  }
-
+  }
 };
 
 /**

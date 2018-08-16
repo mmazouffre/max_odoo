@@ -27,9 +27,9 @@ odoo.define('tableau.tableau', function (require) {
 		  var widgi = document.createElement('div');
 		  widgi.className = 'oe_kanban_card';
 		  var widgo = document.createElement('div');
-		  widgi.className = 'oe_kanban_card';
+		  widgo.className = 'oe_kanban_card';
 		  var widgu = document.createElement('div');
-		  widgi.className = 'oe_kanban_card';
+		  widgu.className = 'oe_kanban_card';
 
 		  this.groups = new vis.DataSet([
 			{id: 1, content: widgi},
@@ -181,10 +181,11 @@ odoo.define('tableau.tableau', function (require) {
             var groups = split_groups(events, group_bys);
 	    var groups1 = new vis.DataSet();
 	    groups.forEach(function(element) {
-	      console.log(element);
-	      groups1.add({id: element.id, content: element.__name, kanban: "hello"});
+              
+              var kanban = document.createElement('div');
+              kanban.innerHTML = "hello";
+	      groups1.add({id: element.id, content: element.__name, kanban: kanban});
 	    });
-	    console.log(groups1);
             this.timeline.setGroups(groups1);
             this.timeline.setItems(data);
             if (!this.mode || this.mode == 'fit'){
