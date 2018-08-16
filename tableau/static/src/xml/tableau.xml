@@ -3,7 +3,7 @@
     <div id="visualization"></div>
    </t>
   <t t-name="kanban-box">   
-    <div>Bonjour</div>
+    <div id="bonjour">Bonjour</div>
    </t>
 </template>
 

@@ -11875,7 +11875,6 @@ Group.prototype.setData = function (data) {
   var content;
   var templateFunction;
   var kanban;
-  console.log(data);
   if (this.itemSet.options && this.itemSet.options.groupTemplate) {
     templateFunction = this.itemSet.options.groupTemplate.bind(this);
     content = templateFunction(data, this.dom.button);

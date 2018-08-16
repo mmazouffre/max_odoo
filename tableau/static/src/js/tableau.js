@@ -81,6 +81,7 @@ odoo.define('tableau.tableau', function (require) {
 
 
 	  var container = this.$el.get(0);
+          console.log(this.$el);
 
 	  this.timeline = new vis.Timeline(container, null, options);
 	  this.timeline.setGroups(this.groups);
@@ -180,10 +181,12 @@ odoo.define('tableau.tableau', function (require) {
             };
             var groups = split_groups(events, group_bys);
 	    var groups1 = new vis.DataSet();
+
+            var rendered = Qweb.render()
+	    console.log(rendered);
 	    groups.forEach(function(element) {
-              
-              var kanban = document.createElement('div');
-              kanban.innerHTML = "hello";
+              var kanban = rendered;
+	      console.log(kanban);
 	      groups1.add({id: element.id, content: element.__name, kanban: kanban});
 	    });
             this.timeline.setGroups(groups1);
