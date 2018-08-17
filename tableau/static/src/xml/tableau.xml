@@ -2,8 +2,18 @@
   <t t-name="Dash">   
     <div id="visualization"></div>
    </t>
-  <t t-name="kanban-box">   
-    <div id="bonjour">Bonjour</div>
-   </t>
+ 
+  <t t-name="PataProut">
+       <i><b>Pata... Prout 
+      <strong><field name="name"/></strong></b></i>
+  </t>
+  <t t-name="kanban-box">
+     <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click">
+        <span><t t-esc="record.name.value"/></span>
+     </div>
+     <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click">
+	<span><t t-esc="record.date_deadline.raw_value"/></span>
+     </div>
+  </t>
 </template>
 

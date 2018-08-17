@@ -10,6 +10,7 @@ odoo.define('tableau.tableau', function (require) {
     var time = require('web.time');
     var View = require('web.View');
     var KanbanRecord = require('web_kanban.Record')
+    var session = require('web.session');
 
     var _t = core._t;
     var _lt = core._lt;
@@ -23,6 +24,8 @@ odoo.define('tableau.tableau', function (require) {
 	icon : 'fa-project-diagram',
    
         init : function(parent,dataset,view_id,options) {
+
+		  this.qweb = options.qweb;
 
 		  var widgi = document.createElement('div');
 		  widgi.className = 'oe_kanban_card';
@@ -81,7 +84,6 @@ odoo.define('tableau.tableau', function (require) {
 
 
 	  var container = this.$el.get(0);
-          console.log(this.$el);
 
 	  this.timeline = new vis.Timeline(container, null, options);
 	  this.timeline.setGroups(this.groups);
@@ -178,16 +180,20 @@ odoo.define('tableau.tableau', function (require) {
               qweb: require('web.core').qweb,
               model: require('web.DataModel'),
               read_only_mode: this.options.read_only_mode,
-            };
+            };  
             var groups = split_groups(events, group_bys);
 	    var groups1 = new vis.DataSet();
 
-            var rendered = Qweb.render()
-	    console.log(rendered);
+	    
+
+            
 	    groups.forEach(function(element) {
-              var kanban = rendered;
-	      console.log(kanban);
-	      groups1.add({id: element.id, content: element.__name, kanban: kanban});
+	      var kanban = new KanbanRecord(self, element, options);
+	      console.log(kanban.qweb_context);	      
+              var div = document.createElement('div');
+	      console.log(QWeb.render('PataProut', kanban.qweb_context));
+	      div.innerHTML = QWeb.render('kanban-box', kanban.qweb_context);
+	      groups1.add({id: element.id, content: element.__name, kanban: div});
 	    });
             this.timeline.setGroups(groups1);
             this.timeline.setItems(data);

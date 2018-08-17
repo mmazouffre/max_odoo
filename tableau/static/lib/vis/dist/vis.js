@@ -11884,7 +11884,7 @@ Group.prototype.setData = function (data) {
   if (data!= null && data.kanban != undefined){
     kanban = data.kanban;
     this.dom.button.appendChild(kanban);
-    console.log(kanban);
+
   } else {
 
 	  if (content instanceof Element) {
