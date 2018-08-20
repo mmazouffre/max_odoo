@@ -2,6 +2,7 @@
 <odoo>
     <template id="assets_backend" name="tableau assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
+           <link rel="stylesheet" href="/project/static/src/css/project.css"/>
 	   <link rel="stylesheet" href="/tableau/static/lib/vis/dist/vis-timeline-graph2d.min.css"></link>
 	   <script type="text/javascript" src="/tableau/static/lib/vis/dist/vis.js"></script>
 	   <script type="text/javascript" src="/tableau/static/src/js/tableau.js"></script>

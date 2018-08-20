@@ -17,7 +17,58 @@ odoo.define('tableau.tableau', function (require) {
     var QWeb = core.qweb;
 
     
-    
+	KanbanRecord.include({
+		on_card_clicked: function () {
+		    if (this.model === 'project.project') {
+		        this.$('.o_project_kanban_boxes a').first().click();
+		    } else {
+		        this._super.apply(this, arguments);
+		    }
+		},
+		on_kanban_action_clicked: function (ev) {
+		    var self = this;
+		    if (this.model === 'project.task' && $(ev.currentTarget).data('type') === 'set_cover') {
+		        ev.preventDefault();
+
+		        new Model('ir.attachment').query(['id', 'name'])
+		           .filter([['res_model', '=', 'project.task'], ['res_id', '=', this.id], ['mimetype', 'ilike', 'image']])
+		           .all().then(open_cover_images_dialog);
+		    } else {
+		        this._super.apply(this, arguments, ev);
+		    }
+
+		    function open_cover_images_dialog(attachment_ids) {
+		        var cover_id = self.record.displayed_image_id.raw_value[0];
+		        var $content = $(QWeb.render("project.SetCoverModal", {
+		            cover_id: cover_id,
+		            attachment_ids: attachment_ids,
+		        }));
+		        var $imgs = $content.find('img');
+
+		        var dialog = new Dialog(self, {
+		            title: _t("Set a Cover Image"),
+		            buttons: [{text: _t("Select"), classes: 'btn-primary', close: true, disabled: !cover_id, click: function () {
+		                self.update_record({data: {displayed_image_id: $imgs.filter('.o_selected').data('id')}});
+		            }}, {text: _t("Remove Cover Image"), close: true, click: function () {
+		                self.update_record({data: {displayed_image_id: 0}});
+		            }}, {text: _t("Discard"), close: true}],
+		            $content: $content,
+		        }).open();
+
+		        var $selectBtn = dialog.$footer.find('.btn-primary');
+		        $content.on('click', 'img', function (ev) {
+		            $imgs.not(ev.currentTarget).removeClass('o_selected');
+		            $selectBtn.prop('disabled', !$(ev.currentTarget).toggleClass('o_selected').hasClass('o_selected'));
+		        });
+
+		        $content.on('dblclick', 'img', function (ev) {
+		            self.update_record({data: {displayed_image_id: $(ev.currentTarget).data('id')}});
+		            dialog.close();
+		        });
+		    }
+		},
+	});    
+
     var myView = View.extend({
 	template: "Dash",
 	display_name : _lt("Tableau"),
@@ -40,28 +91,6 @@ odoo.define('tableau.tableau', function (require) {
 			{id: 3, content: widgu},
 			]);
 
-		  var date = new Date();
-		  date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
-		  var end = new Date();
-		  end.setHours(date.getHours() +  200 );
-		  var midend = new Date();
-		  midend.setHours(date.getHours() + 90 );
-		  var middate = new Date();
-		  middate.setHours(date.getHours() + 110 );
-
-		  this.items = new vis.DataSet([
-			{id: 1, group: 1, start: date, end: end, content : 'Task ' + 1, timeset: true},
-			{id: 2, group: 2, start: date, end: end, content : 'Task ' + 2, timeset: true},
-			{id: 3, group: 3, start: date, end: end, content : 'Task ' + 3, timeset: true},
-			]);
-
-
-		this.items.add({id: 4, group: 1, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 60});
-		this.items.add({id: 5, group: 1, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		this.items.add({id: 6, group: 2, start: date, end: midend, content: 'SubTask ' + 1, timeset: false, ontask: 0});
-		this.items.add({id: 7, group: 2, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		this.items.add({id: 8, group: 3, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 100});
-		this.items.add({id: 9, group: 3, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 20});
 		
 		return this._super.apply(this,arguments)
 
@@ -86,8 +115,9 @@ odoo.define('tableau.tableau', function (require) {
 	  var container = this.$el.get(0);
 
 	  this.timeline = new vis.Timeline(container, null, options);
-	  this.timeline.setGroups(this.groups);
-	  this.timeline.setItems(this.items);
+
+
+
 		},
 
 	do_search: function (domains, contexts, group_bys) {
@@ -184,23 +214,45 @@ odoo.define('tableau.tableau', function (require) {
             var groups = split_groups(events, group_bys);
 	    var groups1 = new vis.DataSet();
 
+	    var date = new Date();
+		  date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
+		  var end = new Date();
+		  end.setHours(date.getHours() +  200 );
+		  var midend = new Date();
+		  midend.setHours(date.getHours() + 90 );
+		  var middate = new Date();
+		  middate.setHours(date.getHours() + 110 );
 	    
-
-            
+	    var items = new vis.DataSet();
+            var i = 1;
 	    groups.forEach(function(element) {
-	      var kanban = new KanbanRecord(self, element, options);
-	      console.log(kanban.qweb_context);	      
+	      var kanban = new KanbanRecord(self, element, options);     
               var div = document.createElement('div');
-	      console.log(QWeb.render('PataProut', kanban.qweb_context));
 	      div.innerHTML = QWeb.render('kanban-box', kanban.qweb_context);
 	      groups1.add({id: element.id, content: element.__name, kanban: div});
+	      console.log(element);
+
+	      items.add({id: i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true,});
+	      i = i + 1;
 	    });
             this.timeline.setGroups(groups1);
-            this.timeline.setItems(data);
+
+		  
+
+
+		items.add({id: 4, group: 14, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 60});
+		items.add({id: 5, group: 14, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
+		items.add({id: 6, group: 15, start: date, end: midend, content: 'SubTask ' + 1, timeset: false, ontask: 0});
+		items.add({id: 7, group: 15, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
+		items.add({id: 8, group: 16, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 100});
+		items.add({id: 9, group: 16, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 20});
+            this.timeline.setItems(items);
+
+
             if (!this.mode || this.mode == 'fit'){
                 this.timeline.fit();
             }
-	},
+		},
     });
 
 

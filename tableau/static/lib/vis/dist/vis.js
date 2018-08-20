@@ -11843,6 +11843,7 @@ Group.prototype._create = function () {
   inner.appendChild(button);
   this.dom.button = button;
   this.dom.button.style.height = "66px"
+  this.dom.button.style.width = "140px"
 
   
   var foreground = document.createElement('div');

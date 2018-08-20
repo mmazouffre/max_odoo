@@ -52,7 +52,7 @@
 	<!-- An html -->
 
 	<record id="sample_html" model="ir.actions.act_window">
-	    <field name="name">A page</field>
+	    <field name="name">Planification</field>
 	    <field name="res_model">project.task</field>
             <field name="view_mode">tree,form,tableau</field>
             <field name="arch" type="xml">
