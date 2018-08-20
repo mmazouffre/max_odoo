@@ -19,7 +19,7 @@ odoo.define('tableau.tableau', function (require) {
     
 	KanbanRecord.include({
 		on_card_clicked: function () {
-		    if (this.model === 'project.project') {
+		    if (this.model === 'project.task') {
 		        this.$('.o_project_kanban_boxes a').first().click();
 		    } else {
 		        this._super.apply(this, arguments);
@@ -115,10 +115,31 @@ odoo.define('tableau.tableau', function (require) {
 	  var container = this.$el.get(0);
 
 	  this.timeline = new vis.Timeline(container, null, options);
-
+	  this.timeline.on('click', this.on_click);
 
 
 		},
+    
+    on_click: function (e) {
+            // handle a click on a group header
+            if (e.what == 'group-label') {
+                return this.on_group_click(e);
+            }
+	},
+
+    on_group_click: function (e) {
+			console.log(e);
+            if (e.group == -1) {
+                return;
+            }
+            return this.do_action({
+                type: 'ir.actions.act_window',
+                res_model: this.fields_view.model,
+                res_id: e.group,
+                target: 'new',
+                views: [[false, 'form']]
+            });
+	},
 
 	do_search: function (domains, contexts, group_bys) {
             var self = this;
@@ -229,6 +250,7 @@ odoo.define('tableau.tableau', function (require) {
 	      var kanban = new KanbanRecord(self, element, options);     
               var div = document.createElement('div');
 	      div.innerHTML = QWeb.render('kanban-box', kanban.qweb_context);
+		  console.log(kanban.qweb_context);
 	      groups1.add({id: element.id, content: element.__name, kanban: div});
 	      console.log(element);
 
