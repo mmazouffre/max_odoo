@@ -77,7 +77,6 @@ odoo.define('tableau.tableau', function (require) {
 	},
 
     on_group_click: function (e) {
-			console.log(e);
             if (e.group == -1) {
                 return;
             }
@@ -203,7 +202,7 @@ odoo.define('tableau.tableau', function (require) {
 	      groups1.add({id: element.id, content: element.__name, kanban: div});
 	      console.log(element);
 
-	      items.add({id: i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true,});
+	      items.add({id: i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true});
 	      i = i + 1;
 	    });
             this.timeline.setGroups(groups1);
