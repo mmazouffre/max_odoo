@@ -200,9 +200,10 @@ odoo.define('tableau.tableau', function (require) {
 	      div.innerHTML = QWeb.render('kanban-box', kanban.qweb_context);
 		  console.log(kanban.qweb_context);
 	      groups1.add({id: element.id, content: element.__name, kanban: div});
-	      console.log(element);
 
-	      items.add({id: i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true});
+	      if(element.date_deadline != false){
+	      	items.add({id: i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true});
+	      }
 	      i = i + 1;
 	    });
             this.timeline.setGroups(groups1);
@@ -210,12 +211,12 @@ odoo.define('tableau.tableau', function (require) {
 		  
 
 
-		items.add({id: 4, group: 14, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 60});
-		items.add({id: 5, group: 14, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		items.add({id: 6, group: 15, start: date, end: midend, content: 'SubTask ' + 1, timeset: false, ontask: 0});
-		items.add({id: 7, group: 15, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		items.add({id: 8, group: 16, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 100});
-		items.add({id: 9, group: 16, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 20});
+		items.add({id: 104, group: 14, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 60});
+		items.add({id: 105, group: 14, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
+		items.add({id: 106, group: 15, start: date, end: midend, content: 'SubTask ' + 1, timeset: false, ontask: 0});
+		items.add({id: 107, group: 15, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
+		items.add({id: 108, group: 16, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 100});
+		items.add({id: 109, group: 16, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 20});
             this.timeline.setItems(items);
 
 
