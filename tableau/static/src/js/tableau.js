@@ -27,19 +27,6 @@ odoo.define('tableau.tableau', function (require) {
 
 		  this.qweb = options.qweb;
 
-		  var widgi = document.createElement('div');
-		  widgi.className = 'oe_kanban_card';
-		  var widgo = document.createElement('div');
-		  widgo.className = 'oe_kanban_card';
-		  var widgu = document.createElement('div');
-		  widgu.className = 'oe_kanban_card';
-
-		  this.groups = new vis.DataSet([
-			{id: 1, content: widgi},
-			{id: 2, content: widgo},
-			{id: 3, content: widgu},
-			]);
-
 		
 		return this._super.apply(this,arguments)
 
@@ -183,14 +170,7 @@ odoo.define('tableau.tableau', function (require) {
             var groups = split_groups(events, group_bys);
 	    var groups1 = new vis.DataSet();
 
-	    var date = new Date();
-		  date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
-		  var end = new Date();
-		  end.setHours(date.getHours() +  200 );
-		  var midend = new Date();
-		  midend.setHours(date.getHours() + 90 );
-		  var middate = new Date();
-		  middate.setHours(date.getHours() + 110 );
+	    
 	    
 	    var items = new vis.DataSet();
             var i = 1;
@@ -202,21 +182,37 @@ odoo.define('tableau.tableau', function (require) {
 	      groups1.add({id: element.id, content: element.__name, kanban: div});
 
 	      if(element.date_deadline != false){
-	      	items.add({id: i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true});
+	      	items.add({id: 10 * i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true});
 	      }
+
+	      /* TODO: Add subtasks according to the database
+	       *
+	       * items.add({id: 10 * i + 1, group: element.id, start: '', end: '', content: 'Subtask ' + 1, timeset: false, ontask: 60});
+               *
+	       */
+
 	      i = i + 1;
 	    });
             this.timeline.setGroups(groups1);
 
-		  
+
+		//this is an example, remove this after adding subtasks
+		var date = new Date();
+		date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
+		var end = new Date();
+		end.setHours(date.getHours() +  200 );
+		var midend = new Date();
+		midend.setHours(date.getHours() + 90 );
+		var middate = new Date();
+		middate.setHours(date.getHours() + 110 );		  
+		items.add({id: 4, group: 14, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 60});
+		items.add({id: 5, group: 14, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
+		items.add({id: 6, group: 15, start: date, end: midend, content: 'SubTask ' + 1, timeset: false, ontask: 0});
+		items.add({id: 7, group: 15, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
+		items.add({id: 8, group: 16, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 100});
+		items.add({id: 9, group: 16, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 20});
 
 
-		items.add({id: 104, group: 14, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 60});
-		items.add({id: 105, group: 14, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		items.add({id: 106, group: 15, start: date, end: midend, content: 'SubTask ' + 1, timeset: false, ontask: 0});
-		items.add({id: 107, group: 15, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		items.add({id: 108, group: 16, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 100});
-		items.add({id: 109, group: 16, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 20});
             this.timeline.setItems(items);
 
 
