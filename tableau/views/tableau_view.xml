@@ -26,6 +26,7 @@
 		      <field name="name"/>
 		      <field name="project_id"/>
 		      <field name="user_id"/>
+		      <field name="stage_id"/>
 		      <field name="color"/>
 		      <field name="displayed_image_id"/>
                       <h1> Les prunes c'est bon!</h1>
@@ -34,7 +35,28 @@
                       </div>
                 </tableau>
 	    </field>
-        </record>      
+        </record>     
+
+	<record id="default_lots_tableau" model="ir.ui.view">
+            <field name="name">Tableau par défaut</field>
+            <field name="model">dynalec.lot</field>
+            <field name="type">tableau</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml" >
+		<tableau>	      
+		      <field name="name"/>
+		      <field name="project_id"/>
+		      <field name="stage_id"/>
+		      <field name="taches"/>
+                      <h1> Les prunes c'est bon!</h1>
+		      <div>
+                           <dash/>
+                      </div>
+                </tableau>
+	    </field>
+        </record>     
+
+ 
 
         <!-- List of users -->
                 
@@ -57,13 +79,22 @@
             </field>
 	</record>
 
+	<record id="sample_lots" model="ir.actions.act_window">
+	    <field name="name">Planification</field>
+	    <field name="res_model">dynalec.lot</field>
+            <field name="view_mode">tableau,form</field>
+            <field name="arch" type="xml">
+		<dash>Hello</dash>
+            </field>
+	</record>
 
         
         
    <menuitem name="Planification" id="menu_main_pm" web_icon="tableau,static/description/icon.png" sequence="2"/>
 
+
     <menuitem id="menu_tableau" name="Dashboard" parent="menu_main_pm" sequence="1"/>
-    <menuitem id="test2" name="Gantt" parent="menu_tableau" sequence="3" action="sample_html"/>    
+    <menuitem id="test3" name="Gantt en mieux" parent="menu_tableau" sequence="5" action="sample_lots"/>   
     <menuitem id="test" name="Task list" parent="menu_tableau" sequence="4" action="sample_user_list"/>
 
 

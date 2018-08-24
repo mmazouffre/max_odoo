@@ -7,7 +7,16 @@
 	   <script type="text/javascript" src="/tableau/static/lib/vis/dist/vis.js"></script>
 	   <script type="text/javascript" src="/tableau/static/src/js/tableau.js"></script>
         </xpath>
+
     </template>
 
+
+    <template id="assets_backend_2" name="tableau assets" inherit_id="web_timeline.assets_backend">
+
+        <xpath expr="//script[@src='/web_timeline/static/lib/vis/vis-timeline-graph2d.min.js']" position="replace">
+	   <script type="text/javascript" src="/tableau/static/lib/vis/dist/vis.js"></script>
+	</xpath>
+
+    </template>
 
 </odoo>

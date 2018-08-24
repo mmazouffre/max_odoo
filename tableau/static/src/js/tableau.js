@@ -178,41 +178,30 @@ odoo.define('tableau.tableau', function (require) {
 	      var kanban = new KanbanRecord(self, element, options);     
               var div = document.createElement('div');
 	      div.innerHTML = QWeb.render('kanban-box', kanban.qweb_context);
-		  console.log(kanban.qweb_context);
+
 	      groups1.add({id: element.id, content: element.__name, kanban: div});
 
-	      if(element.date_deadline != false){
-	      	items.add({id: 10 * i, group: element.id, start: element.create_date, end: element.date_deadline, content: 'Task ' + i, timeset: true});
+	      if(element.prevision_sortie != false && element.prevision_demarage != false){
+	      	items.add({id: 10 * i, group: element.id, start: element.prevision_demarrage, end: element.prevision_sortie, content: 'Date Prévue', timeset: true});
+		var X = new Date(element.prevision_sortie);
+		var j = 1;
+		var Taches = new Model('project.task');
+		element.taches.forEach(function(e) {
+		  Taches.query(['name', 'progress', 'planned_hours']).filter([['id', '=', e]]).all().then(function(task){
+		    var realtask = task[0];
+		    var Y = new Date();
+		    Y.setHours(X.getHours() - realtask.planned_hours);
+		    items.add({id: 10 * i + j, group: element.id, start:Y , end: X, content: realtask.name, timeset: false, ontask: realtask.progress});
+		    console.log(X.getHours());
+		    X.setHours(Y.getHours()); 
+                    j = j + 1;
+		  });
+		});
 	      }
-
-	      /* TODO: Add subtasks according to the database
-	       *
-	       * items.add({id: 10 * i + 1, group: element.id, start: '', end: '', content: 'Subtask ' + 1, timeset: false, ontask: 60});
-               *
-	       */
-
 	      i = i + 1;
 	    });
             this.timeline.setGroups(groups1);
-
-
-		//this is an example, remove this after adding subtasks
-		var date = new Date();
-		date.setHours(date.getHours() +  4 * (Math.random() < 0.2));
-		var end = new Date();
-		end.setHours(date.getHours() +  200 );
-		var midend = new Date();
-		midend.setHours(date.getHours() + 90 );
-		var middate = new Date();
-		middate.setHours(date.getHours() + 110 );		  
-		items.add({id: 4, group: 14, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 60});
-		items.add({id: 5, group: 14, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		items.add({id: 6, group: 15, start: date, end: midend, content: 'SubTask ' + 1, timeset: false, ontask: 0});
-		items.add({id: 7, group: 15, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 0});
-		items.add({id: 8, group: 16, start: date, end: midend, content: 'Subtask ' + 1, timeset: false, ontask: 100});
-		items.add({id: 9, group: 16, start: middate, end: end, content: 'Subtask ' + 2, timeset: false, ontask: 20});
-
-
+	    console.log(items);
             this.timeline.setItems(items);
 
 
