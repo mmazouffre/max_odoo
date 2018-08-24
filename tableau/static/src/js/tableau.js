@@ -184,24 +184,29 @@ odoo.define('tableau.tableau', function (require) {
 	      if(element.prevision_sortie != false && element.prevision_demarage != false){
 	      	items.add({id: 10 * i, group: element.id, start: element.prevision_demarrage, end: element.prevision_sortie, content: 'Date Prévue', timeset: true});
 		var X = new Date(element.prevision_sortie);
-		var j = 1;
+		var j = 0;
 		var Taches = new Model('project.task');
-		element.taches.forEach(function(e) {
-		  Taches.query(['name', 'progress', 'planned_hours']).filter([['id', '=', e]]).all().then(function(task){
-		    var realtask = task[0];
-		    var Y = new Date();
-		    Y.setHours(X.getHours() - realtask.planned_hours);
-		    items.add({id: 10 * i + j, group: element.id, start:Y , end: X, content: realtask.name, timeset: false, ontask: realtask.progress});
-		    console.log(X.getHours());
-		    X.setHours(Y.getHours()); 
-                    j = j + 1;
+		console.log(element);
+		var tasks = new Array();
+		Taches.query(['name', 'progress', 'planned_hours', 'parent_id', 'affaire', 'dynalec_lot', 'project_id']).all().then(function(task){
+			tasks.push(task.reverse());
 		  });
+		console.log(tasks);
+		tasks.forEach(function(e){
+		  console.log(e);
+		  console.log(e.affaire[0]);
+		  if(e.affaire[0] == element.id){
+		    var Y = new Date();
+		    Y.setTime(X.getTime() - e.planned_hours*3600*1000*3);
+		    items.add({id: 10 * i + j + 1, group: element.id, start:Y , end: X, content: e.name, timeset: false, ontask: e.progress});
+		    X.setTime(Y.getTime()); 
+                    j = j + 1;
+		  }		
 		});
 	      }
 	      i = i + 1;
 	    });
             this.timeline.setGroups(groups1);
-	    console.log(items);
             this.timeline.setItems(items);
 
 
